@@ -2,6 +2,9 @@ var scene = new THREE.Scene(),
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000),
     a = new THREE.PointLight(0xffffff, 2),
     renderer = new THREE.WebGLRenderer({alpha: true}),
+    mapSize = new THREE.DirectionalLight(255, 0, 0),
+    shadowMapEnabled = true,
+    shadowMapType = THREE.PCFSoftShadowMap,
     tierra, luna, sol;
 
 function renderScene() {
@@ -16,9 +19,16 @@ function main() {
     renderer.setClearColor(0x000000, 0.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMapEnabled = true;
-    //renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    renderer.shadowMapType = THREE.PCFSoftShadowMap
+
+    const planeGeometry = new THREE.PlaneGeometry(50, 50)
+    const plane = new THREE.Mesh(planeGeometry, new THREE.MeshPhongMaterial())
+    plane.rotateX(-Math.PI / 2)
+    plane.position.y = -6
+    plane.receiveShadow = true
+    scene.add(plane)
     
-    // Eventos del raton
+    // Eventos del mouse
     MOUSE.initialize("#canvas");
 
     // Añadir cámara
@@ -34,7 +44,7 @@ function main() {
     scene.add(light)
 
     const color = {
-        color: 0xffffff
+        color: 0x0
     }
     const intensity = 1;
 
@@ -48,14 +58,27 @@ function main() {
     const light3 = new THREE.HemisphereLight()
     scene.add(light3)
 
-    const light4 = new THREE.DirectionalLight(0x0);
+    const helper3 = new THREE.HemisphereLightHelper(light3, 5)
+    scene.add(helper3)
+
+    var light4 = new THREE.DirectionalLight(0xffffff);
+    light4.castShadow = true
     scene.add(light4);
+
+    const helper4 = new THREE.DirectionalLightHelper(light4)
+    scene.add(helper4)
 
     const light5 = new THREE.PointLight()
     scene.add(light5)
 
+    const helper5 = new THREE.PointLightHelper(light5)
+    scene.add(helper5)
+
     const light6 = new THREE.SpotLight()
     scene.add(light6)
+
+    const helper6 = new THREE.SpotLightHelper(light6)
+    scene.add(helper6)
 
     const data = {
         color: light.color.getHex(),
@@ -70,7 +93,7 @@ function main() {
     const lightFolder = gui.addFolder('THREE.AmbientLight')
 
     const lightColor = {
-        color: 0xffffff
+        color: 0x0
     }
 
     lightFolder.addColor(lightColor, 'color')
@@ -78,17 +101,9 @@ function main() {
             light.color.set(lightColor.color)
         })
     lightFolder.add(light2, 'intensity').min(0).max(10).step(0.01)
+    lightFolder.open()
 
-    //AMBIENT-END   
-
-    //
-    //
-
-    //DIRECTION-BEGIN 
-    //const DirectionalLightFolder = gui.addFolder('THREE.DirectionalLight')
-    //DirectionalLightFolder.add(light4.shadow.camera, 'left', -10, -1, 0.1)
-
-    //DIRECTION-END
+    //AMBIENT-END
 
     //HEMISPHERE-BEGIN
     const HemisphereLightFolder = gui.addFolder('THREE.HemisphereLight')
@@ -110,7 +125,7 @@ function main() {
     PointLightFolder.add(light5.position, 'z', -50, 50, 0.01)
     
         const light9 = {
-            color: 0xffffff
+            color: 0x0
         }
 
         PointLightFolder.addColor(light9, 'color')
@@ -152,6 +167,7 @@ function main() {
 }
 
 main();
+
 
 spotLight = new THREE.SpotLight;
     lightHelper = new THREE.lightHelper;
