@@ -27,6 +27,10 @@ function main() {
     plane.position.y = -6
     plane.receiveShadow = true
     scene.add(plane)
+
+    //const controls = new OrbitControls(camera, renderer.domElement)
+    //controls.addEventListener('change', render)
+
     
     // Eventos del mouse
     MOUSE.initialize("#canvas");
@@ -105,6 +109,16 @@ function main() {
 
     //AMBIENT-END
 
+    //DIRECTIONAL-BEGIN
+    const DirectionalLightFolder= gui.addFolder('THREE.DirectionalLight')
+    
+    DirectionalLightFolder.add(light4.position, 'x', -50, 50, 0.01)
+    DirectionalLightFolder.add(light4.position, 'y', -50, 50, 0.01)
+    DirectionalLightFolder.add(light4.position, 'z', -50, 50, 0.01)
+    DirectionalLightFolder.open()
+
+    //DIRECTIONAL-END
+
     //HEMISPHERE-BEGIN
     const HemisphereLightFolder = gui.addFolder('THREE.HemisphereLight')
     HemisphereLightFolder.addColor(data, 'groundColor').onChange(() => {
@@ -133,15 +147,19 @@ function main() {
                 light5.color.set(light9.color)
             })
 
+    PointLightFolder.open()
     //POINT-END
     
     //SPOT-BEGIN
     const SpotLightFolder = gui.addFolder('THREE.SpotLight')
+    
     SpotLightFolder.add(light6, 'distance', 0, 100, 0.01)
     SpotLightFolder.add(light6, 'decay', 0, 4, 0.1)
     SpotLightFolder.add(light6.position, 'x', -50, 50, 0.01)
     SpotLightFolder.add(light6.position, 'y', -50, 50, 0.01)
     SpotLightFolder.add(light6.position, 'z', -50, 50, 0.01)
+    SpotLightFolder.open()
+    
     //SPOT-END
 
     const PointLightHelper = new THREE.PointLightHelper(light5, 2)
